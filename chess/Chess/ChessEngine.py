@@ -21,7 +21,7 @@ class GameState:
         self.castleRightsLog = [CastleRights(self.currentCastlingRight.wks, self.currentCastlingRight.bks,
                                              self.currentCastlingRight.wqs, self.currentCastlingRight.bqs)]
 
-    def makeMove(self, move):
+    def makeMove(self, move, piecePromoted='--'):
         self.board[move.startRow][move.startCol] = '--'
         self.board[move.endRow][move.endCol] = move.pieceMoved
         self.moveLog.append(move)
@@ -32,7 +32,9 @@ class GameState:
             self.blackKingLocation = (move.endRow, move.endCol)
 
         if move.isPawnPromotion:
-            self.board[move.endRow][move.endCol] = move.pieceMoved[0] + 'Q'
+            if piecePromoted != '--':
+                print(piecePromoted)
+                self.board[move.endRow][move.endCol] = move.pieceMoved[0] + piecePromoted
 
         if move.isEnpassantMove:
             self.board[move.startRow][move.endCol] = '--'
@@ -71,6 +73,7 @@ class GameState:
                 self.enpassantPossible = (move.endRow, move.endCol)
             if move.pieceMoved[1] == 'p' and abs(move.startRow - move.endRow) == 2:
                 self.enpassantPossible = ()
+
 
             # undo castling
             self.castleRightsLog.pop()
@@ -266,7 +269,6 @@ class GameState:
                 break
 
     def getBishopMoves(self, r, c, moves):
-
         # dreapta sus
         i = r - 1
         j = c + 1
